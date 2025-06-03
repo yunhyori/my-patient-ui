@@ -1,31 +1,33 @@
-name: Deploy Vite to GitHub Pages
+# my-patient-ui/.github/workflows/deploy.yml
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches:
-      - master
+      - master     # 로컬에서 git push 할 때 ‘master’ 브랜치에 푸시되면 동작
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: 체크아웃 체크아웃 코드
         uses: actions/checkout@v3
+        with:
+          persist-credentials: false  # 토큰 충돌 방지
 
-      - name: Setup Node
+      - name: Node 설치
         uses: actions/setup-node@v3
         with:
           node-version: 20
 
-      - name: Install and Build
-        run: |
-          npm ci
-          npm run build
+      - name: 의존성 설치
+        run: npm ci
 
-      - name: Deploy
+      - name: 빌드 (Vite)
+        run: npm run build
+
+      - name: 배포 (gh-pages 브랜치에 dist/를 push)
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          branch: gh-pages
-          folder: dist
-
-# force trigger2
+          branch: gh-pages          # 배포 결과물을 담을 대상 브랜치
+          folder: dist              # gh-pages 브랜치에 복사할 폴더

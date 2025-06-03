@@ -1,168 +1,182 @@
-import React, { useState } from 'react';
+// my-patient-ui/src/App.jsx
+import React, { useState } from "react";
 
-export default function App() {
-  const [step, setStep] = useState('menu'); // menu, new, existing
-  const [mode, setMode] = useState(null); // HF, CPAP, BI
-  const [showConfirm, setShowConfirm] = useState(false);
-  const [parameter, setParameter] = useState(null);
-  const [settings, setSettings] = useState({
-    flow: 0,
-    fio2: 0,
-    dew: 0,
-    humidity: 0,
-  });
+export default function PatientFlowUI() {
+  const [screen, setScreen] = useState("menu");
+  const [patientId, setPatientId] = useState("");
+  const [bedNo, setBedNo] = useState("");
+  const [mode, setMode] = useState("HF");
+  const [flow, setFlow] = useState(30);
+  const [fio2, setFio2] = useState(40);
+  const [dewPoint, setDewPoint] = useState(37);
+  const [humidLevel, setHumidLevel] = useState(3);
+  const [confirmPopup, setConfirmPopup] = useState("");
+  const [isStarted, setIsStarted] = useState(false);
 
-  const handleModeChange = (selectedMode) => {
-    setMode(selectedMode);
-    setShowConfirm(true);
-  };
+  const startTreatment = () => setConfirmPopup("start");
+  const stopTreatment = () => setConfirmPopup("stop");
 
-  const updateParam = (key, delta) => {
-    setSettings((prev) => ({
-      ...prev,
-      [key]: Math.max(0, prev[key] + delta),
-    }));
+  const confirmAction = () => {
+    if (confirmPopup === "start") setIsStarted(true);
+    if (confirmPopup === "stop") setIsStarted(false);
+    setConfirmPopup("");
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4 text-sm">
-      {step === 'menu' && (
-        <div className="grid gap-4">
-          <h1 className="text-xl font-bold text-center mb-2">환자 선택</h1>
-          <div className="flex justify-around">
+    <div className="bg-black text-white min-h-screen p-6">
+      {/* 메뉴 화면 */}
+      {screen === "menu" && (
+        <div className="flex gap-10 justify-center">
+          <button
+            onClick={() => setScreen("new")}
+            className="bg-blue-500 w-40 h-40 rounded-lg flex flex-col justify-center items-center"
+          >
+            <div className="text-4xl">➕</div>
+            <div className="mt-2">신규 환자</div>
+          </button>
+          <button
+            onClick={() => setScreen("monitor")}
+            className="bg-green-500 w-40 h-40 rounded-lg flex flex-col justify-center items-center"
+          >
+            <div className="text-4xl">▶️</div>
+            <div className="mt-2">기존 환자</div>
+          </button>
+        </div>
+      )}
+
+      {/* 신규 환자 설정 화면 */}
+      {screen === "new" && (
+        <div>
+          <h2 className="text-xl mb-4">환자 설정</h2>
+          <div className="grid grid-cols-3 gap-4 max-w-xl">
+            <div>
+              <label>환자 ID</label>
+              <input
+                className="w-full text-black"
+                value={patientId}
+                onChange={(e) => setPatientId(e.target.value)}
+              />
+            </div>
+            <div>
+              <label>침상 번호</label>
+              <input
+                className="w-full text-black"
+                value={bedNo}
+                onChange={(e) => setBedNo(e.target.value)}
+              />
+            </div>
+            <div>
+              <label>치료 모드</label>
+              <button
+                onClick={() =>
+                  setMode(
+                    mode === "HF" ? "CPAP" : mode === "CPAP" ? "bi-level" : "HF"
+                  )
+                }
+                className="w-full bg-gray-700 p-2"
+              >
+                {mode}
+              </button>
+            </div>
+            {mode === "HF" && (
+              <div className="col-span-2 bg-blue-900 p-2">
+                캐뉼라 교정
+              </div>
+            )}
             <button
-              className="border-4 border-green-500 rounded-xl px-4 py-2 bg-white"
-              onClick={() => setStep('new')}
+              onClick={() => setScreen("settings")}
+              className="col-span-1 bg-green-700 p-2"
             >
-              신규환자
-            </button>
-            <button
-              className="border-4 border-green-500 rounded-xl px-4 py-2 bg-white"
-              onClick={() => setStep('existing')}
-            >
-              기존환자
+              다음
             </button>
           </div>
         </div>
       )}
 
-      {step === 'new' && (
-        <div className="grid gap-4">
-          <div>
-            <label>환자 ID:</label>
-            <input className="border p-1 w-full" />
-          </div>
-          <div>
-            <label>침상 번호:</label>
-            <input className="border p-1 w-full" />
-          </div>
-
-          <div>
-            <h2 className="font-bold mt-4">치료모드 선택</h2>
-            <div className="flex justify-around">
-              {['HF', 'CPAP', 'BI'].map((m) => (
-                <button
-                  key={m}
-                  onClick={() => handleModeChange(m)}
-                  className={`px-4 py-2 border rounded ${
-                    mode === m ? 'bg-green-300' : 'bg-white'
-                  }`}
-                >
-                  {m}
-                </button>
-              ))}
+      {/* 치료 설정 화면 */}
+      {screen === "settings" && (
+        <div>
+          <h2 className="text-xl mb-4">치료 설정</h2>
+          <div className="grid grid-cols-2 gap-4 max-w-xl">
+            <div>
+              <label>유량 (LPM)</label>
+              <div className="flex items-center gap-2">
+                <button onClick={() => setFlow((f) => f - 1)}>-</button>
+                <div>{flow}</div>
+                <button onClick={() => setFlow((f) => f + 1)}>+</button>
+              </div>
             </div>
-          </div>
-
-          {showConfirm && (
-            <div className="border p-4 bg-white shadow">
-              <p>치료 모드로 변경하시겠습니까?</p>
-              <div className="flex gap-2 mt-2 justify-end">
-                <button
-                  className="px-3 py-1 bg-gray-200"
-                  onClick={() => setShowConfirm(false)}
-                >
-                  취소
+            <div>
+              <label>FiO₂ (%)</label>
+              <div className="flex items-center gap-2">
+                <button onClick={() => setFio2((f) => f - 1)}>-</button>
+                <div>{fio2}</div>
+                <button onClick={() => setFio2((f) => f + 1)}>+</button>
+              </div>
+            </div>
+            <div>
+              <label>Dew Point (℃)</label>
+              <div className="flex items-center gap-2">
+                <button onClick={() => setDewPoint((d) => d - 1)}>-</button>
+                <div>{dewPoint}</div>
+                <button onClick={() => setDewPoint((d) => d + 1)}>+</button>
+              </div>
+            </div>
+            <div>
+              <label>가습 레벨</label>
+              <div className="flex items-center gap-2">
+                <button onClick={() => setHumidLevel((h) => Math.max(1, h - 1))}>
+                  -
                 </button>
-                <button
-                  className="px-3 py-1 bg-blue-400 text-white"
-                  onClick={() => setShowConfirm(false)}
-                >
-                  확인
+                <div>{humidLevel}</div>
+                <button onClick={() => setHumidLevel((h) => Math.min(5, h + 1))}>
+                  +
                 </button>
               </div>
             </div>
-          )}
-
-          {mode && (
-            <div className="border-t mt-4 pt-4">
-              {mode === 'HF' && (
-                <div>
-                  <p className="font-semibold">캐뉼라 교정</p>
-                  <select className="border p-1 w-full mt-1">
-                    <option>소형</option>
-                    <option>중형</option>
-                    <option>대형</option>
-                  </select>
-                </div>
-              )}
-              {(mode === 'CPAP' || mode === 'BI') && (
-                <div>
-                  <p className="font-semibold">서킷 교정</p>
-                </div>
-              )}
-
-              <h3 className="font-bold mt-4">치료 파라미터 설정</h3>
-              {[
-                ['flow', '유량'],
-                ['fio2', 'FiO2'],
-                ['dew', 'Dew Point'],
-                ['humidity', '가습 레벨'],
-              ].map(([key, label]) => (
-                <div key={key} className="flex items-center justify-between my-1">
-                  <span>{label}</span>
-                  <div className="flex items-center gap-2">
-                    <button
-                      className="px-2 py-1 bg-gray-200 rounded"
-                      onClick={() => updateParam(key, -1)}
-                    >
-                      -
-                    </button>
-                    <span className="w-6 text-center">{settings[key]}</span>
-                    <button
-                      className="px-2 py-1 bg-gray-200 rounded"
-                      onClick={() => updateParam(key, 1)}
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-              ))}
-
-              <div className="mt-4 flex justify-end">
-                <button
-                  className="px-4 py-2 bg-green-500 text-white rounded"
-                  onClick={() => alert('치료를 시작합니다.')}
-                >
-                  치료 시작
-                </button>
-              </div>
-              <div className="mt-2 flex justify-end">
-                <button
-                  className="text-sm text-red-500"
-                  onClick={() => alert('치료를 중지합니다.')}
-                >
-                  치료 종료
-                </button>
-              </div>
-            </div>
-          )}
+          </div>
+          <div className="mt-6">
+            {isStarted ? (
+              <button
+                className="bg-red-700 p-4"
+                onClick={stopTreatment}
+              >
+                종료
+              </button>
+            ) : (
+              <button
+                className="bg-green-600 p-4"
+                onClick={startTreatment}
+              >
+                시작
+              </button>
+            )}
+          </div>
         </div>
       )}
 
-      {step === 'existing' && (
-        <div className="text-center">
-          <p>기존 환자 모니터링 화면입니다.</p>
+      {/* 확인 팝업 */}
+      {confirmPopup && (
+        <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-80">
+          <div className="bg-gray-900 p-6 rounded-xl text-center">
+            <p className="mb-4">
+              치료를 {confirmPopup === "start" ? "시작" : "종료"}하시겠습니까?
+            </p>
+            <div className="flex justify-center gap-6">
+              <button
+                onClick={confirmAction}
+                className="bg-blue-600 px-4 py-2"
+              >
+                확인
+              </button>
+              <button
+                onClick={() => setConfirmPopup("")}
+                className="bg-gray-500 px-4 py-2"
+              >
+                취소
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
