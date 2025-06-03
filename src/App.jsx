@@ -35,12 +35,12 @@ export default function App() {
   const [activeParam, setActiveParam] = useState("");
 
   // 파라미터 값들
-  const [flow, setFlow] = useState(30);         // 1 ~ 60
-  const [fio2, setFio2] = useState(40);         // 21 ~ 100
-  const [rrDetect, setRrDetect] = useState(false);// On/Off
-  const [dewPoint, setDewPoint] = useState(31); // 31 ~ 37
+  const [flow, setFlow] = useState(30);           // 1 ~ 60
+  const [fio2, setFio2] = useState(40);           // 21 ~ 100
+  const [rrDetect, setRrDetect] = useState(false); // On/Off
+  const [dewPoint, setDewPoint] = useState(31);   // 31 ~ 37
   const [humidLevel, setHumidLevel] = useState(3);// 1 ~ 5
-  const [tsfOn, setTsfOn] = useState(false);    // On/Off
+  const [tsfOn, setTsfOn] = useState(false);      // On/Off
   const [biFlowOn, setBiFlowOn] = useState(false);// On/Off
 
   // 치료 시작/종료 팝업
@@ -164,8 +164,6 @@ export default function App() {
     if (activeParam === "fio2") {
       setFio2((v) => Math.max(21, v - 1));
     }
-    // RR 감지는 클릭만으로 토글 → 드래그 불필요
-
     if (activeParam === "dew") {
       setDewPoint((v) => Math.max(31, v - 1));
     }
@@ -186,8 +184,6 @@ export default function App() {
     if (activeParam === "fio2") {
       setFio2((v) => Math.min(100, v + 1));
     }
-    // RR 감지는 클릭으로 토글
-
     if (activeParam === "dew") {
       setDewPoint((v) => Math.min(37, v + 1));
     }
@@ -241,8 +237,16 @@ export default function App() {
   // 9) 화면 렌더링
   // ─────────────────────────────────────────────────────────────────────────────
   return (
-       <div className=" flex flex-col md:flex-row iphone-land:flex-row min-h-screen bg-gray-900 overflow-auto">
-      {/** ─────────────────────────────────────────────────────────────
+    <div className="
+        flex 
+        flex-col 
+        iphone-land:flex-row      /* 아이폰 가로(≥880px)에서 가로 배치 */
+        md:flex-row               /* 데스크톱/태블릿(≥768px)에서도 가로 배치 */
+        min-h-screen 
+        bg-gray-900 
+        overflow-auto
+      ">
+      {/** ───────────────────────────────────────────────────────────── 
        * 좌측: 화면 전환 영역 (OFF / MENU / NEW / SETTINGS)
        * ───────────────────────────────────────────────────────────── **/}
       <div className="flex-1 bg-black text-white overflow-auto">
@@ -309,7 +313,7 @@ export default function App() {
                 <div className="flex-1 p-6 flex flex-col">
                   <h2 className="text-2xl mb-6 text-white">환자 설정</h2>
 
-                  {/** [B-1] 맨 위 3개 카드: “환자 ID”, “침상 번호”, “치료 모드” */}
+                  {/** [B-1] 맨 위 3개 카드: “환자 ID”, “침상 번호”, “치료 모드” **/}
                   <div className="flex justify-between mb-8 space-x-4">
                     {/* ■ 환자 ID */}
                     <div className="flex-1 bg-gray-800 border border-gray-700 rounded-lg p-4 flex flex-col">
@@ -370,7 +374,7 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/** [B-2] 캘리브레이션(교정) 버튼 */}
+                  {/** [B-2] 캘리브레이션(교정) 버튼 **/}
                   <div className="mb-8">
                     {mode === "HF" ? (
                       <button
@@ -389,7 +393,7 @@ export default function App() {
                     )}
                   </div>
 
-                  {/** [B-3] “다음” / “뒤로” 버튼 */}
+                  {/** [B-3] “다음” / “뒤로” 버튼 **/}
                   <div className="flex gap-4 mb-6">
                     <button
                       onClick={() => {
@@ -409,24 +413,24 @@ export default function App() {
                     </button>
                   </div>
 
-                  {/** [B-4] 캘리브레이션 타입 선택 모달 */}
+                  {/** [B-4] 캘리브레이션 타입 선택 모달 **/}
                   {showTypeModal && (
                     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
                       <div className="bg-gray-800 rounded-xl w-80 p-6 space-y-4">
                         <h3 className="text-white text-lg">교정 유형 선택</h3>
                         <p className="text-gray-300 text-sm">
                           {mode === "HF"
-                            ? "1. 캐뉼라 유형을 선택하십시오."
+                            ? "1. キャ뉼라 유형을 선택하십시오."
                             : "1. 서킷 유형을 선택하십시오."}
                         </p>
                         <div className="flex justify-between mt-4 space-x-2">
                           {mode === "HF" ? (
                             <>
                               <button
-                                onClick={() => selectCalibType("캐뉼라")}
+                                onClick={() => selectCalibType("キャ뉼라")}
                                 className="flex-1 bg-blue-600 py-2 rounded-lg text-white hover:bg-blue-700"
                               >
-                                캐뉼라
+                                キャ뉼라
                               </button>
                               <button
                                 onClick={() => selectCalibType("T-piece")}
@@ -462,18 +466,18 @@ export default function App() {
                     </div>
                   )}
 
-                  {/** [B-5] 안내(Instruction) 팝업 */}
+                  {/** [B-5] 안내(Instruction) 팝업 **/}
                   {showInstructionModal && (
                     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
                       <div className="bg-gray-800 rounded-xl w-80 p-6 space-y-4">
                         <h3 className="text-white text-lg">교정 진행 시 주의사항</h3>
                         <ul className="text-gray-300 text-sm list-decimal list-inside space-y-1">
                           <li>
-                            박테리아 필터, 가습 챔버, 서킷과 캐뉼라를 올바르게
+                            박테리아 필터, 가습 챔버, 서킷과 キャ뉼라를 올바르게
                             장착하십시오.
                           </li>
-                          <li>서킷, 캐뉼라, 에어 홀이 막히지 않도록 하십시오.</li>
-                          <li>교정 진행 중에 장치 및 서킷 또는 캐뉼라를 움직이지 마십시오.</li>
+                          <li>서킷, キャ뉼라, 에어 홀이 막히지 않도록 하십시오.</li>
+                          <li>교정 진행 중에 장치 및 서킷 또는 キャ뉼라를 움직이지 마십시오.</li>
                         </ul>
                         <div className="mt-4 flex justify-center gap-4">
                           <button
@@ -683,35 +687,35 @@ export default function App() {
                     </div>
                   )}
 
-                  {/** [C] 단일 액션 버튼: “치료 시작” ⇄ “치료 종료” */}
+                  {/** [C] 단일 액션 버튼: “치료 시작” ⇄ “치료 종료” **/}
                   <div className="mt-8 w-full max-w-2xl">
-                   <button
-                     onClick={() => {
-                       // isStarted에 따라 팝업 띄우기
-                       if (isStarted) {
-                         openStopPopup();
-                       } else {
-                         openStartPopup();
-                       }
-                     }}
-                     className={`w-full py-4 rounded-lg flex items-center justify-center text-white 
-                       ${isStarted ? "bg-red-600 hover:bg-red-700" : "bg-green-600 hover:bg-green-700"}`}
-                   >
-                     {isStarted ? (
-                       /* 치료 중일 때: “중지 ▇” */
-                       <span className="flex items-center gap-2 text-xl font-semibold">
-                         <span>중지</span>
-                         <span className="text-2xl">▇</span> {/* 정지 아이콘(Unicode U+2587) */}
-                       </span>
-                     ) : (
-                       /* 대기 상태일 때: “시작 ▶” */
-                       <span className="flex items-center gap-2 text-xl font-semibold">
-                         <span>시작</span>
-                         <span className="text-2xl">▶</span> {/* 재생 아이콘(Unicode U+25B6) */}
-                       </span>
-                     )}
-                   </button>
-                 </div>
+                    <button
+                      onClick={() => {
+                        // isStarted에 따라 팝업 띄우기
+                        if (isStarted) {
+                          openStopPopup();
+                        } else {
+                          openStartPopup();
+                        }
+                      }}
+                      className={`w-full py-4 rounded-lg flex items-center justify-center text-white 
+                        ${isStarted ? "bg-red-600 hover:bg-red-700" : "bg-green-600 hover:bg-green-700"}`}
+                    >
+                      {isStarted ? (
+                        /* 치료 중일 때: “중지 ▇” */
+                        <span className="flex items-center gap-2 text-xl font-semibold">
+                          <span>중지</span>
+                          <span className="text-2xl">▇</span> {/* 정지 아이콘(Unicode U+2587) */}
+                        </span>
+                      ) : (
+                        /* 대기 상태일 때: “시작 ▶” */
+                        <span className="flex items-center gap-2 text-xl font-semibold">
+                          <span>시작</span>
+                          <span className="text-2xl">▶</span> {/* 재생 아이콘(Unicode U+25B6) */}
+                        </span>
+                      )}
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
@@ -722,7 +726,7 @@ export default function App() {
       {/** ─────────────────────────────────────────────────────────────
        * 우측: 전원 버튼 + 다이얼 버튼
        * ───────────────────────────────────────────────────────────── **/}
-      <div className="flex-initial w-full md:w-36 bg-gray-800 flex flex-col items-center justify-center space-y-8 py-8">
+      <div className="flex-initial w-full iphone-land:w-36 md:w-36 bg-gray-800 flex flex-col items-center justify-center space-y-8 py-8">
         {/* 전원 버튼 */}
         <button
           onClick={handlePowerToggle}
