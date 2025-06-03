@@ -412,7 +412,7 @@ export default function App() {
                         <h3 className="text-white text-lg">교정 유형 선택</h3>
                         <p className="text-gray-300 text-sm">
                           {mode === "HF"
-                            ? "1. キャ뉼라 유형을 선택하십시오."
+                            ? "1. 캐뉼라 유형을 선택하십시오."
                             : "1. 서킷 유형을 선택하십시오."}
                         </p>
                         <div className="flex justify-between mt-4 space-x-2">
@@ -465,11 +465,11 @@ export default function App() {
                         <h3 className="text-white text-lg">교정 진행 시 주의사항</h3>
                         <ul className="text-gray-300 text-sm list-decimal list-inside space-y-1">
                           <li>
-                            박테리아 필터, 가습 챔버, 서킷과 キャ뉼라를 올바르게
+                            박테리아 필터, 가습 챔버, 서킷과 캐뉼라를 올바르게
                             장착하십시오.
                           </li>
-                          <li>서킷, キャ뉼라, 에어 홀이 막히지 않도록 하십시오.</li>
-                          <li>교정 진행 중에 장치 및 서킷 또는 キャ뉼라를 움직이지 마십시오.</li>
+                          <li>서킷, 캐뉼라, 에어 홀이 막히지 않도록 하십시오.</li>
+                          <li>교정 진행 중에 장치 및 서킷 또는 캐뉼라를 움직이지 마십시오.</li>
                         </ul>
                         <div className="mt-4 flex justify-center gap-4">
                           <button
