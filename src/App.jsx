@@ -237,15 +237,7 @@ export default function App() {
   // 9) 화면 렌더링
   // ─────────────────────────────────────────────────────────────────────────────
   return (
-    <div className="
-        flex 
-        flex-col 
-        iphone-land:flex-row      /* 아이폰 가로(≥880px)에서 가로 배치 */
-        md:flex-row               /* 데스크톱/태블릿(≥768px)에서도 가로 배치 */
-        min-h-screen 
-        bg-gray-900 
-        overflow-auto
-      ">
+    <div className="flex flex-row min-h-screen bg-gray-900">
       {/** ───────────────────────────────────────────────────────────── 
        * 좌측: 화면 전환 영역 (OFF / MENU / NEW / SETTINGS)
        * ───────────────────────────────────────────────────────────── **/}
@@ -427,10 +419,10 @@ export default function App() {
                           {mode === "HF" ? (
                             <>
                               <button
-                                onClick={() => selectCalibType("キャ뉼라")}
+                                onClick={() => selectCalibType("캐뉼라")}
                                 className="flex-1 bg-blue-600 py-2 rounded-lg text-white hover:bg-blue-700"
                               >
-                                キャ뉼라
+                                캐뉼라
                               </button>
                               <button
                                 onClick={() => selectCalibType("T-piece")}
@@ -455,7 +447,7 @@ export default function App() {
                               </button>
                               <button
                                 onClick={() => setShowTypeModal(false)}
-                                className="flex-1 bg-gray-600 py-2 rounded-lg text-white hover:bg-gray-500"
+                                className="flex-1 bg-gray-600 py-2.rounded-lg text-white.hover:bg-gray-500"
                               >
                                 취소
                               </button>
@@ -482,7 +474,7 @@ export default function App() {
                         <div className="mt-4 flex justify-center gap-4">
                           <button
                             onClick={handleInstructionConfirm}
-                            className="flex-1 bg-green-600 py-2 rounded-lg text-white hover:bg-green-700"
+                            className="flex-1 bg-green-600 py-2.rounded-lg text-white.hover:bg-green-700"
                           >
                             확인
                           </button>
@@ -491,7 +483,7 @@ export default function App() {
                               setShowInstructionModal(false);
                               setScreenMode("new");
                             }}
-                            className="flex-1 bg-gray-600 py-2 rounded-lg text-white hover:bg-gray-500"
+                            className="flex-1 bg-gray-600 py-2.rounded-lg text-white.hover:bg-gray-500"
                           >
                             취소
                           </button>
@@ -507,7 +499,7 @@ export default function App() {
              * 2-3) HF 기능 설정 파라미터 화면 (settings 모드)
              * ───────────────────────────────────────────────── **/}
             {screenMode === "settings" && (
-              <div className="flex w-full h-full overflow-hidden">
+              <div className="flex w-full h-full overflow-auto">
                 {/** ── [A] 왼쪽 페이지 네비게이션 (↑ / 페이지번호 / ↓) ── **/}
                 <div className="w-20 bg-gray-800 flex flex-col items-center py-8 space-y-4">
                   {/* 위로 */}
@@ -724,9 +716,9 @@ export default function App() {
       </div>
 
       {/** ─────────────────────────────────────────────────────────────
-       * 우측: 전원 버튼 + 다이얼 버튼
+       * 우측: 전원 버튼 + 다이얼 버튼 (고정 너비 w-36)
        * ───────────────────────────────────────────────────────────── **/}
-      <div className="flex-initial w-full iphone-land:w-36 md:w-36 bg-gray-800 flex flex-col items-center justify-center space-y-8 py-8">
+      <div className="flex-none w-36 bg-gray-800 flex flex-col items-center justify-center space-y-8 py-8">
         {/* 전원 버튼 */}
         <button
           onClick={handlePowerToggle}
@@ -787,13 +779,13 @@ export default function App() {
             <div className="flex justify-center gap-6">
               <button
                 onClick={handleConfirmPopup}
-                className="flex-1 bg-blue-600 py-2 rounded-lg text-white hover:bg-blue-700"
+                className="flex-1 bg-blue-600 py-2.rounded-lg text-white.hover:bg-blue-700"
               >
                 확인
               </button>
               <button
                 onClick={() => setConfirmPopup("")}
-                className="flex-1 bg-gray-600 py-2 rounded-lg text-white hover:bg-gray-500"
+                className="flex-1 bg-gray-600 py-2.rounded-lg text-white.hover:bg-gray-500"
               >
                 취소
               </button>

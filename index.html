@@ -3,12 +3,76 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <title>My Patient UI</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- TailwindCSS를 사용하므로, 빌드 시 자동으로 CSS가 주입됩니다 -->
+    <!-- 
+      뷰포트 설정: 
+      - width=device-width: 기기의 CSS 픽셀 폭을 따라가라 
+      - initial-scale=1.0: 초기 줌 레벨을 1로 설정 
+      - viewport-fit=cover: 아이폰 X 같은 노치 영역까지 전체화면 사용 권장 
+    -->
+    <meta 
+      name="viewport" 
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover" 
+    />
+    <title>My Patient UI (Landscape Only)</title>
+    <!-- TailwindCSS가 빌드 시 주입될 것이므로 별도 CDN은 필요 없습니다. -->
+    <style>
+      /* ─────────────────────────────────────────────────
+         Portrait(세로) 모드일 때 보여줄 오버레이 스타일
+         ───────────────────────────────────────────────── */
+      #rotate-overlay {
+        position: fixed;
+        inset: 0;
+        background: #000; /* 검은 배경 */
+        color: #fff;
+        display: none;    /* 기본적으로 가려져 있다가, Portrait일 때만 보이도록 JS에서 제어 */
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        z-index: 9999;
+      }
+      #rotate-overlay p {
+        font-size: 1.25rem;
+        line-height: 1.5;
+        padding: 0 1rem;
+      }
+    </style>
   </head>
-  <body class="bg-black text-white">
+  <body class="bg-black text-white overflow-hidden">
+    <!-- Portrait일 때만 보이는 오버레이 -->
+    <div id="rotate-overlay">
+      <p>가로 모드로 기기를 돌려주세요.<br/>(This app works only in landscape.)</p>
+    </div>
+
+    <!-- React 앱이 마운트될 DOM -->
     <div id="root"></div>
+
+    <!--
+      모듈 형식으로 번들된 React 진입점 파일을 불러옵니다.
+      Vite 등의 빌드 도구를 사용한다면 경로가 달라질 수 있습니다.
+    -->
     <script type="module" src="/src/main.jsx"></script>
+
+    <!--
+      아래 스크립트는 브라우저 크기가 변경될 때마다 Orientation(가로·세로)를 감지해서
+      Portrait라면 #rotate-overlay를 보이도록, Landscape라면 숨기도록 제어합니다.
+    -->
+    <script>
+      const overlay = document.getElementById("rotate-overlay");
+
+      function checkOrientation() {
+        // window.innerWidth > window.innerHeight → 가로 모드
+        // 세로 모드면 overlay 보이기
+        if (window.innerWidth <= window.innerHeight) {
+          overlay.style.display = "flex";
+        } else {
+          overlay.style.display = "none";
+        }
+      }
+
+      // 페이지 로드시와 창 크기(Orientation) 변경 시 점검
+      window.addEventListener("load", checkOrientation);
+      window.addEventListener("resize", checkOrientation);
+      window.addEventListener("orientationchange", checkOrientation);
+    </script>
   </body>
 </html>
