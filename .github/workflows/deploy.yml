@@ -3,7 +3,7 @@ name: Deploy Vite to GitHub Pages
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   deploy:
@@ -28,4 +28,4 @@ jobs:
           branch: gh-pages
           folder: dist
 
-# force trigger
+# force trigger2
