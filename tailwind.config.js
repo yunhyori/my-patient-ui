@@ -12,7 +12,7 @@ module.exports = {
     // ─────────────────────────────────────────────────────────────
     screens: {
       // iPhone 11 Pro 가로 모드 (CSS 픽셀 기준)
-      "iphone-land": "780px",
+      "iphone-land": "680px",
 
       // Tailwind 기본 브레이크포인트 (기존)
       "sm": "640px",
