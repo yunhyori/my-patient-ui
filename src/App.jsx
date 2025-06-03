@@ -241,7 +241,15 @@ export default function App() {
   // 9) 화면 렌더링
   // ─────────────────────────────────────────────────────────────────────────────
   return (
-       <div className=" flex flex-col md:flex-row iphone-land:flex-row min-h-screen bg-gray-900 overflow-auto">
+        <div className="
+    flex
+    flex-col
+    md:flex-row
+    iphone-land:flex-row   /* iPhone 11 Pro 가로(≥812px)에서만 flex-row */
+    min-h-screen           /* iOS Safari 주소창이 올라가도 잘림 방지 */
+    bg-gray-900
+    overflow-auto           /* 콘텐츠가 넘칠 때 스크롤 생김 */
+  ">
       {/** ─────────────────────────────────────────────────────────────
        * 좌측: 화면 전환 영역 (OFF / MENU / NEW / SETTINGS)
        * ───────────────────────────────────────────────────────────── **/}
