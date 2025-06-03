@@ -2,8 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Optional: 전역 커스텀 스타일 */
+/* 
+  전역으로 배경 검정+흰 텍스트 적용 
+  (모바일 세로/가로 시 전환을 index.css에서 감지)
+*/
+
 body {
-  /* 모바일 중심 UI라면 배경 검정 유지 */
-  @apply bg-black text-white;
+  @apply bg-screenBg text-white overflow-hidden;
+}
+
+/* 
+  orientation: landscape 일 때, 메인 컨테이너(Screen) 내부를 flex-row 로 재배치
+  portrait: flex-col (기본)
+*/
+@media (orientation: landscape) {
+  .app-container {
+    display: flex !important;
+    flex-direction: row !important;
+  }
 }

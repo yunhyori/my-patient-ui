@@ -1,0 +1,139 @@
+/* ScreenArea.css */
+
+/* 1) 화면 전체 컨테이너 */
+.screen-container {
+  display: flex;
+  width: 100%;
+  height: 100vh; /* 필요에 따라 맞춤 높이 지정 */
+  background-color: #000; /* 배경 검정 (예시) */
+}
+
+/* 2) 왼쪽 패널: 스펙에 맞춰 너비 조정 */
+.left-panel {
+  display: flex;
+  flex-direction: column;
+  width: 50%; /* 예시: 화면의 절반을 사용, 필요 시 조절 */
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: #0f0f0f; /* 진한 배경색 예시 */
+}
+
+/* 3) 오른쪽 패널: 기존 Power / Dial 아이콘 배치 */
+.right-panel {
+  flex: 1; /* 남은 공간 모두 차지 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #222633; /* 예시 배경색 (원래 UI 색깔) */
+}
+
+/* 4) 상단 탭 */
+.mode-tabs {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.tab-item {
+  flex: 1;
+  padding: 12px 0;
+  margin-right: 10px;
+  background-color: #1a1f2b;
+  color: #aaa;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.tab-item:last-child {
+  margin-right: 0;
+}
+
+.tab-item.active {
+  background-color: #27303f;
+  color: #fff;
+}
+
+/* 5) 환자 정보 박스 영역 */
+.info-boxes {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.info-box {
+  width: 30%; /* 3등분: 100% / 3 */
+  background-color: #1a1f2b;
+  border: 1px solid #2e3341;
+  border-radius: 6px;
+  padding: 10px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.info-label {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 8px;
+}
+
+.info-value {
+  font-size: 24px;
+  color: #fff;
+}
+
+/* 6) 캘리브레이션 버튼 */
+.calibration-button {
+  background-color: #27303f;
+  color: #fff;
+  font-size: 20px;
+  padding: 16px;
+  border: none;
+  border-radius: 6px;
+  width: 100%;
+  margin-bottom: 30px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.calibration-button:hover {
+  background-color: #324057;
+}
+
+/* 7) 네비게이션 버튼 그룹 */
+.nav-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.btn-next,
+.btn-back {
+  flex: 1;
+  font-size: 20px;
+  padding: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-next {
+  background-color: #3ea65c; /* 녹색 */
+  color: #fff;
+  margin-right: 10px;
+}
+
+.btn-next:hover {
+  opacity: 0.8;
+}
+
+.btn-back {
+  background-color: #2e3341; /* 짙은 회색 */
+  color: #fff;
+}
+
+.btn-back:hover {
+  opacity: 0.8;
+}

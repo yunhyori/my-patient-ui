@@ -1,44 +1,80 @@
-// ─────────────────────────────────────────────────
 // src/components/DeviceButtons.jsx
-// ─────────────────────────────────────────────────
 import React from "react";
 
-/**
- * 전원 버튼과 다이얼 버튼을 “원래대로” 보여주는 컴포넌트입니다.
- * - 전원 버튼(윗쪽 원형) : 클릭 시(onPowerToggle) 호출
- * - 다이얼 버튼(아랫쪽 큰 원형) : 실제 동작이 필요 없으면 단순 시각적 요소
- *
- * App.jsx에서 onPowerToggle 함수를 props로 전달하면, 클릭 시 호출됩니다.
- */
-export default function DeviceButtons({ isScreenOn, onPowerToggle }) {
+export default function DeviceButtons({
+  powerOn,
+  onPowerToggle,
+  mode,
+}) {
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center bg-gray-800 p-4 space-y-6">
-      {/* 전원 버튼 영역 */}
-      <button
-        onClick={onPowerToggle}
-        className={`w-16 h-16 flex items-center justify-center rounded-full border-2 
-          ${isScreenOn ? "border-green-400 bg-gray-900 hover:bg-gray-800" 
-                       : "border-red-400 bg-gray-900 hover:bg-gray-800"}`}
-      >
-        {/* 전원 아이콘 (SVG 그대로 복원) */}
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className={`w-8 h-8 ${isScreenOn ? "text-green-400" : "text-red-400"}`}
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v9m0 6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
-        </svg>
-      </button>
+    <div className="absolute top-0 left-0 right-0 flex">
+      {/* 상단 STATUS ICONS(왼쪽) */}
+      <div className="flex items-center gap-3 p-2">
+        <div className="w-6 h-6 bg-gray-700 rounded flex justify-center items-center">
+          {/* 손바닥 아이콘 */}
+          <span className="text-white">✋</span>
+        </div>
+        <div className="w-6 h-6 bg-gray-700 rounded relative">
+          {/* 벨 아이콘 + 점 */}
+          <span className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white">🔔</span>
+          <div className="absolute bottom-0 left-0 flex space-x-0.5">
+            <div className="w-1 h-1 bg-white rounded-full"></div>
+            <div className="w-1 h-1 bg-gray-500 rounded-full"></div>
+            <div className="w-1 h-1 bg-gray-500 rounded-full"></div>
+            <div className="w-1 h-1 bg-gray-500 rounded-full"></div>
+          </div>
+        </div>
+      </div>
 
-      {/* 다이얼 버튼 영역 */}
-      <div className="relative w-20 h-20 rounded-full bg-gray-700 flex items-center justify-center">
-        {/* 바깥 회색 테두리 */}
-        <div className="absolute inset-0 rounded-full border-4 border-gray-600"></div>
-        {/* 중앙 원형 (실제 다이얼) */}
-        <div className="w-10 h-10 rounded-full bg-gray-500"></div>
+      {/* 전원 버튼(오른쪽 끝) */}
+      <div className="ml-auto flex items-center gap-3 p-2">
+        {/* AC, 배터리, 뒤로가기 등 아이콘 */}
+        <div className="flex items-center gap-2">
+          {/* 유선 아이콘 */}
+          <span className="text-green-400">AC</span>
+          <div className="w-6 h-6 bg-gray-700 rounded flex justify-center items-center">
+            <span className="text-green-300">🔋</span>
+          </div>
+          <button
+            className="w-8 h-8 bg-red-600 rounded flex justify-center items-center"
+            onClick={onPowerToggle}
+          >
+            {powerOn ? "■" : "▶️"}
+          </button>
+          <div className="w-6 h-6 bg-gray-700 rounded flex justify-center items-center">
+            <span className="text-white">↩️</span>
+          </div>
+        </div>
+      </div>
+
+      {/* 왼쪽 사이드 메뉴 (vertical) */}
+      <div className="absolute top-16 left-0 bg-gray-900 w-16 flex flex-col items-center py-4 space-y-4">
+        <div className="text-white font-bold">HF</div>
+        <button
+          className="bg-blue-500 w-12 h-12 flex flex-col justify-center items-center rounded"
+        >
+          {/* 신규 환자 아이콘 */}
+          <span className="text-2xl">＋</span>
+          <span className="text-xs mt-1">신규</span>
+        </button>
+        <button
+          className="bg-green-500 w-12 h-12 flex flex-col justify-center items-center rounded"
+        >
+          {/* 기존 환자 아이콘 */}
+          <span className="text-2xl">▶️</span>
+          <span className="text-xs mt-1">기존</span>
+        </button>
+      </div>
+
+      {/* 다이얼(▲▼) 버튼 - 가로 모드에서만 오른쪽에 표시 */}
+      <div className="absolute top-32 right-0 flex flex-col items-center space-y-2 p-2">
+        <button className="bg-gray-700 w-12 h-12 flex justify-center items-center rounded">
+          ▲
+        </button>
+        <div className="text-xs text-gray-300">1 / 2</div>
+        <button className="bg-gray-700 w-12 h-12 flex justify-center items-center rounded">
+          ▼
+        </button>
       </div>
     </div>
   );

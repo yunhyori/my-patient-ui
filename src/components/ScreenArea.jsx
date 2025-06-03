@@ -1,50 +1,80 @@
-import React from 'react'
+// src/components/ScreenArea.jsx
+
+import React, { useRef, useEffect } from "react";
+// SVG import 완전히 제거하고, Heroicons만 사용합니다.
+import { ExclamationTriangleIcon, AdjustmentsVerticalIcon } from "@heroicons/react/24/outline";
 
 export default function ScreenArea({
-  powerOn,
-  currentMode,
-  flowValue,
-  fio2Value,
-  dewPointValue,
-  humidLevel,
-  isStarted,
-  // … 필요하다면 더 props 추가
+  patientId,
+  bedNo,
+  currentPSI,
+  respRate,
+  onAlarm,
+  onParameterChange,
 }) {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    let animationId;
+    let t = 0;
+
+    function drawWave() {
+      const { width, height } = canvas;
+      ctx.clearRect(0, 0, width, height);
+      ctx.strokeStyle = "#00FF00";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      for (let x = 0; x < width; x++) {
+        const y = height / 2 + Math.sin((x + t) * 0.05) * (height / 4);
+        if (x === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+      t += 2;
+      animationId = requestAnimationFrame(drawWave);
+    }
+
+    drawWave();
+    return () => cancelAnimationFrame(animationId);
+  }, []);
+
   return (
-    <div className="h-full bg-black text-white flex flex-col">
-      { !powerOn ? (
-        <div className="flex-1 flex items-center justify-center">
-          <span className="text-gray-500 text-lg">화면 꺼짐</span>
-        </div>
-      ) : (
-        <div className="flex-1 p-4 flex flex-col">
-          {/* 예시 : 상단에 환자 정보 영역 */}
-          <div className="mb-4">
-            <p>환자 ID: {/* … */}</p>
-            <p>침상 번호: {/* … */}</p>
-          </div>
+    <div className="relative flex-1 flex flex-col">
+      {/* 좌측 상단: 환자 정보 */}
+      <div className="absolute top-4 left-4 text-screen-lg font-semibold text-white">
+        환자 ID: {patientId || "--"} / 침상: {bedNo || "--"}
+      </div>
 
-          {/* 예시 : 현재 모드, 유량, FiO₂, 그래프 등 */}
-          <div className="flex gap-4 mb-4">
-            <div className="flex-1 bg-gray-800 p-2 rounded">
-              <p className="text-center">모드: { currentMode }</p>
-            </div>
-            <div className="flex-1 bg-gray-800 p-2 rounded">
-              <p className="text-center">유량: { flowValue } LPM</p>
-            </div>
-            <div className="flex-1 bg-gray-800 p-2 rounded">
-              <p className="text-center">FiO₂: { fio2Value }%</p>
-            </div>
-          </div>
+      {/* 우측 상단: 경고·펌프 아이콘 (Heroicons 사용) */}
+      <div className="absolute top-4 right-4 flex space-x-2">
+        <ExclamationTriangleIcon className="w-6 h-6 text-yellow-400" />
+        <AdjustmentsVerticalIcon className="w-6 h-6 text-gray-300" />
+      </div>
 
-          {/* 예시 : 실시간 그래프나 상태창 (모사) */}
-          <div className="flex-1 bg-gray-900 rounded flex items-center justify-center">
-            <span className="text-gray-600">
-              {isStarted ? '치료 중… 그래프 애니메이션 영역' : '치료 대기 중'}
-            </span>
-          </div>
-        </div>
-      )}
+      {/* 중앙: 캔버스 기반 실시간 파형 */}
+      <div className="flex-1 flex items-center justify-center px-4">
+        <canvas
+          ref={canvasRef}
+          width={600}
+          height={300}
+          className="bg-[#111111] rounded-lg"
+        />
+      </div>
+
+      {/* 하단: 실시간 수치(PSI, RR) */}
+      <div className="absolute bottom-4 left-4 text-screen-base font-mono text-white">
+        PSI: {currentPSI?.toFixed(1) || "--"} / RR: {respRate || "--"}
+      </div>
+
+      {/* 하단 중앙: 진행바 예시 */}
+      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-3/4 h-1 bg-gray-700 rounded-full">
+        <div
+          className="h-full bg-green-400 rounded-full"
+          style={{ width: "50%" }} /* 예시: 50% 진행 */
+        />
+      </div>
     </div>
-  )
+  );
 }
