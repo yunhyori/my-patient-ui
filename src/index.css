@@ -1,7 +1,9 @@
-/* my-patient-ui/src/index.css */
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* (필요하다면 추가 커스텀 CSS를 이 아래에 작성) */
+/* Optional: 전역 커스텀 스타일 */
+body {
+  /* 모바일 중심 UI라면 배경 검정 유지 */
+  @apply bg-black text-white;
+}
