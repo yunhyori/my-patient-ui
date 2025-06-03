@@ -241,7 +241,7 @@ export default function App() {
   // 9) 화면 렌더링
   // ─────────────────────────────────────────────────────────────────────────────
   return (
-    <div className="flex flex-col md:flex-row h-screen bg-gray-900">
+       <div className=" flex flex-col md:flex-row iphone-land:flex-row min-h-screen bg-gray-900 overflow-auto">
       {/** ─────────────────────────────────────────────────────────────
        * 좌측: 화면 전환 영역 (OFF / MENU / NEW / SETTINGS)
        * ───────────────────────────────────────────────────────────── **/}
