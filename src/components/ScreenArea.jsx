@@ -1,79 +1,61 @@
-// src/components/ScreenArea.jsx
-
-import React, { useRef, useEffect } from "react";
-// SVG import 완전히 제거하고, Heroicons만 사용합니다.
-import { ExclamationTriangleIcon, AdjustmentsVerticalIcon } from "@heroicons/react/24/outline";
+// ScreenArea.jsx (또는 App.jsx 내 LeftPanel 컴포넌트)
+import React from "react";
+import "./ScreenArea.css"; // 스타일은 별도 CSS 파일로 분리
 
 export default function ScreenArea({
   patientId,
-  bedNo,
-  currentPSI,
-  respRate,
-  onAlarm,
-  onParameterChange,
+  bedNumber,
+  mode,
+  onModeChange,
+  onCalibrationClick,
+  onNext,
+  onBack,
 }) {
-  const canvasRef = useRef(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-    let animationId;
-    let t = 0;
-
-    function drawWave() {
-      const { width, height } = canvas;
-      ctx.clearRect(0, 0, width, height);
-      ctx.strokeStyle = "#00FF00";
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      for (let x = 0; x < width; x++) {
-        const y = height / 2 + Math.sin((x + t) * 0.05) * (height / 4);
-        if (x === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      }
-      ctx.stroke();
-      t += 2;
-      animationId = requestAnimationFrame(drawWave);
-    }
-
-    drawWave();
-    return () => cancelAnimationFrame(animationId);
-  }, []);
-
   return (
-    <div className="relative flex-1 flex flex-col">
-      {/* 좌측 상단: 환자 정보 */}
-      <div className="absolute top-4 left-4 text-screen-lg font-semibold text-white">
-        환자 ID: {patientId || "--"} / 침상: {bedNo || "--"}
+    <div className="screen-container">
+      {/* 1) 왼쪽 패널 */}
+      <div className="left-panel">
+        {/* 2) 상단 탭 */}
+        <div className="mode-tabs">
+          <button className={`tab-item ${mode === "HF" ? "active" : ""}`} onClick={() => onModeChange("HF")}>
+            HF
+          </button>
+          <button className={`tab-item ${mode === "NEW" ? "active" : ""}`} onClick={() => onModeChange("NEW")}>
+            신규 환자
+          </button>
+        </div>
+
+        {/* 3) 환자 정보 박스 */}
+        <div className="info-boxes">
+          <div className="info-box">
+            <div className="info-label">환자 ID</div>
+            <div className="info-value">{patientId || "000000"}</div>
+          </div>
+          <div className="info-box">
+            <div className="info-label">침상 번호</div>
+            <div className="info-value">{bedNumber || "00000"}</div>
+          </div>
+          <div className="info-box">
+            <div className="info-label">치료 모드</div>
+            <div className="info-value">{mode === "HF" ? "HF" : mode === "CPAP" ? "CPAP" : "BI-LEVEL"}</div>
+          </div>
+        </div>
+
+        {/* 4) 캘리브레이션(캐눌라/서킷) 버튼 */}
+        <button className="calibration-button" onClick={onCalibrationClick}>
+          캐눌라 교정
+        </button>
+
+        {/* 5) 네비게이션 버튼 (다음/뒤로) */}
+        <div className="nav-buttons">
+          <button className="btn-next" onClick={onNext}>다음</button>
+          <button className="btn-back" onClick={onBack}>뒤로</button>
+        </div>
       </div>
 
-      {/* 우측 상단: 경고·펌프 아이콘 (Heroicons 사용) */}
-      <div className="absolute top-4 right-4 flex space-x-2">
-        <ExclamationTriangleIcon className="w-6 h-6 text-yellow-400" />
-        <AdjustmentsVerticalIcon className="w-6 h-6 text-gray-300" />
-      </div>
-
-      {/* 중앙: 캔버스 기반 실시간 파형 */}
-      <div className="flex-1 flex items-center justify-center px-4">
-        <canvas
-          ref={canvasRef}
-          width={600}
-          height={300}
-          className="bg-[#111111] rounded-lg"
-        />
-      </div>
-
-      {/* 하단: 실시간 수치(PSI, RR) */}
-      <div className="absolute bottom-4 left-4 text-screen-base font-mono text-white">
-        PSI: {currentPSI?.toFixed(1) || "--"} / RR: {respRate || "--"}
-      </div>
-
-      {/* 하단 중앙: 진행바 예시 */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-3/4 h-1 bg-gray-700 rounded-full">
-        <div
-          className="h-full bg-green-400 rounded-full"
-          style={{ width: "50%" }} /* 예시: 50% 진행 */
-        />
+      {/* 6) 오른쪽 패널 (기존 Power, Dial 등 UI) */}
+      <div className="right-panel">
+        {/* 기존에 있던 Power 버튼, Dial 컴포넌트 등을 여기에 배치 */}
       </div>
     </div>
   );
