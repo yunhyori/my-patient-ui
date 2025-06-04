@@ -11,6 +11,11 @@ export default function App() {
   const [screenMode, setScreenMode] = useState("off");
 
   // ─────────────────────────────────────────────────────────────────────────────
+  // ** 추가: 작은 화면용 우측 패널 토글 상태 **
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
+  const togglePanel = () => setIsPanelOpen((prev) => !prev);
+
+  // ─────────────────────────────────────────────────────────────────────────────
   // 2) 신규 환자 설정 상태
   // ─────────────────────────────────────────────────────────────────────────────
   const [patientId, setPatientId] = useState("");
@@ -61,12 +66,12 @@ export default function App() {
   const [editingParam, setEditingParam] = useState("");
 
   // 파라미터 값들
-  const [flow, setFlow] = useState(30);          // 1 ~ 60
-  const [fio2, setFio2] = useState(40);          // 21 ~ 100
+  const [flow, setFlow] = useState(30); // 1 ~ 60
+  const [fio2, setFio2] = useState(40); // 21 ~ 100
   const [rrDetect, setRrDetect] = useState(false); // On/Off
-  const [dewPoint, setDewPoint] = useState(31);  // 31 ~ 37
+  const [dewPoint, setDewPoint] = useState(31); // 31 ~ 37
   const [humidLevel, setHumidLevel] = useState(3); // 1 ~ 5
-  const [tsfOn, setTsfOn] = useState(false);     // On/Off
+  const [tsfOn, setTsfOn] = useState(false); // On/Off
   const [biFlowOn, setBiFlowOn] = useState(false); // On/Off
 
   // 치료 시작/종료 팝업
@@ -81,12 +86,12 @@ export default function App() {
   // 4-1) 신규 환자 화면 포커스
   const [focusIndexNew, setFocusIndexNew] = useState(0);
   const newRefs = {
-    patientId: useRef(null),  // index 0
-    bedNo: useRef(null),      // index 1
-    mode: useRef(null),       // index 2
-    calibBtn: useRef(null),   // index 3
-    nextBtn: useRef(null),    // index 4
-    backBtn: useRef(null),    // index 5
+    patientId: useRef(null), // index 0
+    bedNo: useRef(null), // index 1
+    mode: useRef(null), // index 2
+    calibBtn: useRef(null), // index 3
+    nextBtn: useRef(null), // index 4
+    backBtn: useRef(null), // index 5
   };
 
   // 4-2) HF 설정 화면 포커스
@@ -94,13 +99,13 @@ export default function App() {
   // Page2: dew(3), humid(4), tsf(5), biflow(6), startStopBtn(7)
   const [focusIndexSetting, setFocusIndexSetting] = useState(0);
   const settingRefs = {
-    flowCard: useRef(null),     // index 0
-    fio2Card: useRef(null),     // index 1
-    rrCard: useRef(null),       // index 2
-    dewCard: useRef(null),      // index 3
-    humidCard: useRef(null),    // index 4
-    tsfCard: useRef(null),      // index 5
-    biflowCard: useRef(null),   // index 6
+    flowCard: useRef(null), // index 0
+    fio2Card: useRef(null), // index 1
+    rrCard: useRef(null), // index 2
+    dewCard: useRef(null), // index 3
+    humidCard: useRef(null), // index 4
+    tsfCard: useRef(null), // index 5
+    biflowCard: useRef(null), // index 6
     startStopBtn: useRef(null), // index 7
   };
 
@@ -147,7 +152,7 @@ export default function App() {
     }
 
     if (screenMode === "settings" && editingParam !== "") {
-      // 편집 중일 때(single‐click) → “편집 모드 해제”
+      // 편집 모드 ON 상태 → “편집 모드 해제”
       setEditingParam("");
       return;
     }
@@ -211,7 +216,6 @@ export default function App() {
       setFocusIndexSetting(newIndex);
 
       // ▲ 여기에서 "activeParam"을 focusIndexSetting에 매핑
-      //   0→"flow", 1→"fio2", 2→"rr", 3→"dew", 4→"humid", 5→"tsf", 6→"biflow", 7→""
       switch (newIndex) {
         case 0:
           setActiveParam("flow");
@@ -413,6 +417,9 @@ export default function App() {
       // 포커스 인덱스 초기화
       setFocusIndexNew(0);
       setFocusIndexSetting(0);
+
+      // 작은 화면에서 패널도 자동으로 닫기
+      setIsPanelOpen(false);
     } else {
       // 전원 켜기 → 메뉴 화면
       setIsPowerOn(true);
@@ -588,11 +595,12 @@ export default function App() {
   // 12) 화면 렌더링
   // ─────────────────────────────────────────────────────────────────────────────
   return (
-    <div className="flex flex-col md:flex-row h-screen bg-gray-900 overflow-hidden">
+    <div className="relative flex flex-row h-screen bg-gray-900 overflow-hidden">
       {/**────────────────────────────────────────────────────────────────────
        * 좌측: 화면 전환 영역 (OFF / MENU / NEW / SETTINGS)
+       *   - min-w-0을 주어 내부가 넓어져도 overflow 시 우측 패널을 밀어내지 않도록 함
        **/}
-      <div className="flex-1 bg-black text-white flex flex-col">
+      <div className="flex-1 min-w-0 bg-black text-white flex flex-col">
         {/* 화면 OFF */}
         {screenMode === "off" && (
           <div className="w-full h-full flex items-center justify-center">
@@ -809,12 +817,12 @@ export default function App() {
                           <>
                             <button
                               onClick={() => selectCalibType("서킷")}
-                                className="flex-1 bg-indigo-600 py-2 rounded-lg text-white hover:bg-indigo-700 focus:outline-none"
-                              >
-                                서킷
-                              </button>
-                              <button
-                                onClick={() => setShowTypeModal(false)}
+                              className="flex-1 bg-indigo-600 py-2 rounded-lg text-white hover:bg-indigo-700 focus:outline-none"
+                            >
+                              서킷
+                            </button>
+                            <button
+                              onClick={() => setShowTypeModal(false)}
                               className="flex-1 bg-gray-600 py-2 rounded-lg text-white hover:bg-gray-500 focus:outline-none"
                             >
                               취소
@@ -1177,8 +1185,8 @@ export default function App() {
                           <span className="text-2xl">▇</span>
                         </span>
                       ) : (
-                          <span className="flex items-center gap-2 text-xl font-semibold">
-                            <span>시작</span>
+                        <span className="flex items-center gap-2 text-xl font-semibold">
+                          <span>시작</span>
                           <span className="text-2xl">▶</span>
                         </span>
                       )}
@@ -1192,33 +1200,74 @@ export default function App() {
       </div>
 
       {/**────────────────────────────────────────────────────────────────────
-       * 우측: 전원 버튼 + 다이얼 버튼
+       * ** 소형 화면용 토글 버튼 (햄버거 ↔ 닫기)
+       *  - sm 이하(640px 미만)에서만 보이고, md 이상에서는 자동으로 숨김
+       *  - absolute로 최상단 좌측에 고정
        **/}
-      <div className="flex-initial w-full md:w-36 bg-gray-800 flex flex-col items-center justify-center space-y-8 py-8">
+      <button
+        onClick={togglePanel}
+        className={`
+          sm:flex md:hidden   /* sm 이하에서만 flex로 표시, md 이상에서는 숨김 */
+          absolute top-2 left-2 z-50 p-2 rounded-full bg-gray-800 hover:bg-gray-700
+          focus:outline-none
+        `}
+      >
+        {isPanelOpen ? (
+          /* 닫기(X) 아이콘 */
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6 text-white"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        ) : (
+          /* 햄버거(≡) 아이콘 */
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6 text-white"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 8h16M4 16h16" />
+          </svg>
+        )}
+      </button>
+
+      {/**────────────────────────────────────────────────────────────────────
+       * 우측: 전원 버튼 + 다이얼 버튼 패널
+       *  - sm 이하: isPanelOpen 값에 따라 'hidden' 또는 'flex'
+       *  - md 이상: 항상 flex (보이도록)
+       *  - flex-initial w-36: 고정 너비 9rem
+       **/}
+      <div
+        className={`
+          ${isPanelOpen ? "flex" : "hidden"}  /* sm 이하에서는 상태값에 따라 hidden/flex */
+          md:flex                         /* md 이상에서는 항상 표시 */
+          flex-initial w-36 bg-gray-800 flex flex-col items-center justify-center space-y-8 py-8
+        `}
+      >
         {/* 전원 버튼 */}
         <button
           onClick={handlePowerToggle}
-          className={`w-16 h-16 flex items-center justify-center rounded-full border-2 ${
+          className={`w-16 h-16 flex items-center justify-center rounded-full border-2 focus:outline-none ${
             isPowerOn
               ? "border-green-400 bg-gray-900 hover:bg-gray-800"
               : "border-red-400 bg-gray-900 hover:bg-gray-800"
-            } focus:outline-none`}
+          }`}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className={`w-8 h-8 ${
-              isPowerOn ? "text-green-400" : "text-red-400"
-            }`}
+            className={`w-8 h-8 ${isPowerOn ? "text-green-400" : "text-red-400"}`}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
             strokeWidth={2}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M12 3v9m0 6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"
-            />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v9m0 6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
           </svg>
         </button>
 
